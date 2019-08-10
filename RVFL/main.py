@@ -9,7 +9,7 @@ from option import option as op
 data = data[:,1:]
 dataX = data[:,0:-1]
 dataY = data[:,[-1]]
-print(dataX)
+#print(dataX)
 
 
 # do normalization for each feature
@@ -30,16 +30,15 @@ option.bias = 1
 option.link = 1
 option.mode = 1
 
-a=np.array([1,2,3,4,5,6])
-test=dataX[a,:]
-print(test)
-for i in range(1,4):
+#a=np.array([1,2,3,4,5,6])
+#test=dataX[a,:]
+#print(test)
+for i in range(1,2):
 
-    trainX = dataX[index[2*i-1],:]
-    trainY = dataY[index[2*i-1],:]
+    trainX = dataX[index[2*i-2],:]
+    trainY = dataY[index[2*i-2],:]
 
-    testX = dataX[index[2*i],:]
-    testY = dataY[index[2*i],:]
-    #print(trainX)
+    testX = dataX[index[2*i-1],:]
+    testY = dataY[index[2*i-1],:]
   #  [train_accuracy(1,i),ACC_CV(1,i)] = RVFL_train_val(trainX,trainY,testX,testY,option) ;
              
