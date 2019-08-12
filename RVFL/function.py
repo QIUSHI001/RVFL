@@ -70,7 +70,34 @@ def RVFL_train_val(trainX,trainY,testX,testY,option):
             elif option.Scalemode==2:
 
                 [H,k,b]=Scale_feature_separately(H,Saturating_threshold,option.Scale)
-                print(H)
+
+        H = 1 / (1 + np.exp(-H))
+       
+
+    elif option.ActivationFunction.lower()=='sin' or option.ActivationFunction.lower()=='sine':
+
+        if option.Scale:
+            
+            Saturating_threshold=np.array([-np.pi/2,np.pi/2])
+            Saturating_threshold_activate=np.array([-1,1])
+            if option.Scalemode==1:
+                
+                [H,k,b]=Scale_feature(H,Saturating_threshold,option.Scale)
+                
+            elif option.Scalemode==2:
+
+                [H,k,b]=Scale_feature_separately(H,Saturating_threshold,option.Scale)
+                
+        H=np.sin(H)
+        #print(H.min(),H.max())
+
+    elif option.ActivationFunction.lower()=='hardlim':
+
+        H[H>0]=1
+        H[H<0]=0
+        print(H)
+
+        
     #np.set_printoptions(threshold=sys.maxsize)            
     #print(trainY_temp.size)
     return 0
