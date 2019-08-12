@@ -17,19 +17,19 @@ dataX_mean=np.mean(dataX,axis=0)
 dataX_std=np.std(dataX,axis=0)
 dataX=(dataX-dataX_mean)/dataX_std
 
-
 ACC_CV = np.zeros((1,4))
 train_accuracy = np.zeros((1,4))
 
 
 #Look at the documentation of RVFL_train_val function file 
-option=op(100,False,True,'radbas',0,'Uniform',1,1,1)
+option=op(100,False,True,'radbas',0,1,'Uniform',1,1)
 option.N = 20
 option.C = 1
 option.bias = 1
 option.link = 1
 option.mode = 1
-
+option.ActivationFunction='sigmoid'
+option.Scalemode=2
 #a=np.array([1,2,3,4,5,6])
 #test=dataX[a,:]
 #print(test)
@@ -40,5 +40,12 @@ for i in range(1,2):
 
     testX = dataX[index[2*i-1],:]
     testY = dataY[index[2*i-1],:]
-  #  [train_accuracy(1,i),ACC_CV(1,i)] = RVFL_train_val(trainX,trainY,testX,testY,option) ;
+    #[train_accuracy(1,i),ACC_CV(1,i)] = 
+    a=RVFL_train_val(trainX,trainY,testX,testY,option)
              
+#Train_Accuarcy = np.mean(train_accuracy,axis=1)
+#Test_Accuracy = np.mean(ACC_CV,axis=1)
+
+
+#print('The average training accuracy is: %.4f'%Train_Accuarcy)
+#print('The average testing accuracy is: %.4f'%Test_Accuracy)
