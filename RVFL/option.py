@@ -25,3 +25,4 @@ class option:
         self.RandomType=RandomType
         self.Scale=Scale
         self.Scalemode=Scalemode
+        self.C=0.1

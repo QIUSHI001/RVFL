@@ -129,7 +129,7 @@ def RVFL_train_val(trainX,trainY,testX,testY,option):
     elif option.ActivationFunction.lower()== 'sign':
 
         H=np.sign(H)
-
+    
     if option.bias:
         H=np.concatenate([H,np.ones((Nsample,1))],axis=1)
 
@@ -138,32 +138,43 @@ def RVFL_train_val(trainX,trainY,testX,testY,option):
         if option.Scalemode==1:
             trainX_temp=trainX*k+b
             H=np.concatenate([H,trainX_temp],axis=1)
-
-        if option.Scalemode==2:
+            
+        elif option.Scalemode==2:
             [trainX_temp,ktr,btr]=Scale_feature_separately(trainX,Saturating_threshold_activate,option.Scale)
             H=np.concatenate([H,trainX_temp],axis=1)
-
+            
         else:
             H=np.concatenate([H,trainX],axis=1)
-
+            
     H[np.isnan(H)]=0
-
+    
     if option.mode==2:
         beta=np.matmul(np.linalg.pinv(H),trainY_temp)
-        print(beta.shape)
+        #print(beta.shape)
 
-    else:
-        if option.mode==1:
+    elif option.mode==1:
 
-            if not option.C:
-                option.C=0.1
+        if not option.C:
+            option.C=0.1
 
-            C=option.C
+        C=option.C
 
-            if N<Nsample:
-                beta=np.matmul(H.transpose(),trainY_temp)/(np.identity(H.shape(1))+np.matmul(H.transpose(),H)) 
-
+        if N<Nsample:
+            beta=np.matmul(np.matmul(np.linalg.inv(np.identity(H.shape[1])/C+np.matmul(H.T,H)),H.T),trainY_temp)
+        else:
+            beta=np.matmul(H.T,np.matmul(np.linalg.inv(np.identity(H.shape[0])/C+np.matmul(H,H.T)),trainY_temp))
             
+    
+    else:
+        print('Unsupport mode, only Regularized least square and Moore-Penrose pseudoinverse are allowed. ')
+
+    trainY_temp=np.matmul(H,beta)
+    Y_temp=np.zeros((Nsample,1))
+    # decode the target
+
+
+
+
     #np.set_printoptions(threshold=sys.maxsize)            
     #print(trainY_temp.size)
     return 0

@@ -26,9 +26,9 @@ option=op(100,False,True,'radbas',0,1,'Uniform',1,1)
 option.N = 20
 option.bias = 1
 option.link = 1
-option.mode = 2
+option.mode = 1
 option.ActivationFunction='sig'
-option.Scalemode=2
+option.Scalemode=1
 #a=np.array([1,2,3,4,5,6])
 #test=dataX[a,:]
 #print(test)
@@ -36,6 +36,7 @@ for i in range(1,2):
 
     trainX = dataX[index[2*i-2],:]
     trainY = dataY[index[2*i-2],:]
+
 
     testX = dataX[index[2*i-1],:]
     testY = dataY[index[2*i-1],:]
