@@ -42,6 +42,13 @@
   <ItemGroup>
     <InterpreterReference Include="CondaEnv|CondaEnv|Anaconda3" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Database\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database\car_R.docx" />
+    <Content Include="Database\car_random.docx" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
        Visual Studio and specify your pre- and post-build commands in

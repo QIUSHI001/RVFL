@@ -124,12 +124,51 @@ def RVFL_train_val(trainX,trainY,testX,testY,option):
                 
                 [H,k,b]=Scale_feature_separately(H,Saturating_threshold,option.Scale);
 
-        H = radbas(H)
+        H = rb.radbas(H)
+
+    elif option.ActivationFunction.lower()== 'sign':
+
+        H=np.sign(H)
+
+    if option.bias:
+        H=np.concatenate([H,np.ones((Nsample,1))],axis=1)
+
+    if option.link:
+
+        if option.Scalemode==1:
+            trainX_temp=trainX*k+b
+            H=np.concatenate([H,trainX_temp],axis=1)
+
+        if option.Scalemode==2:
+            [trainX_temp,ktr,btr]=Scale_feature_separately(trainX,Saturating_threshold_activate,option.Scale)
+            H=np.concatenate([H,trainX_temp],axis=1)
+
+        else:
+            H=np.concatenate([H,trainX],axis=1)
+
+    H[np.isnan(H)]=0
+
+    if option.mode==2:
+        beta=np.matmul(np.linalg.pinv(H),trainY_temp)
+        print(beta.shape)
+
+    else:
+        if option.mode==1:
+
+            if not option.C:
+                option.C=0.1
+
+            C=option.C
+
+            if N<Nsample:
+                beta=np.matmul(H.transpose(),trainY_temp)/(np.identity(H.shape(1))+np.matmul(H.transpose(),H)) 
+
+            
     #np.set_printoptions(threshold=sys.maxsize)            
     #print(trainY_temp.size)
     return 0
 
-
+  
 
 def Scale_feature(Input,Saturating_threshold,ratio):
     Min_value=Input.min()
