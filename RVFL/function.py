@@ -1,6 +1,10 @@
 import numpy as np
 import numpy.matlib
 import sys
+# hard limit activation function
+hardlim = (lambda x: np.array(x > 0.0, dtype=double))
+# triangular activation function
+tribas = (lambda x: np.clip(1.0 - np.fabs(x), 0.0, 1.0))
 #this is the  function to train and evaluate rvfl for classification
 #problem.
 #option.n :      number of hidden neurons
@@ -93,11 +97,34 @@ def RVFL_train_val(trainX,trainY,testX,testY,option):
 
     elif option.ActivationFunction.lower()=='hardlim':
 
-        H[H>0]=1
-        H[H<0]=0
-        print(H)
+        H=hardlim(H)
 
-        
+    elif option.ActivationFunction.lower()== 'tribas':
+        if option.Scale:
+
+            Saturating_threshold=np.array([-1,1])
+            Saturating_threshold_activate=np.array([0,1])
+            if option.Scalemode==1:
+
+                [H,k,b]=Scale_feature(H,Saturating_threshold,option.Scale)
+            elif option.Scalemode==2:
+                [H,k,b]=Scale_feature_separately(H,Saturating_threshold,option.Scale)
+              
+        H=tribas(H)
+
+    elif option.ActivationFunction.lower()== 'radbas':
+        if option.Scale:
+           
+            Saturating_threshold=np.array([-2.1,2.1])
+            Saturating_threshold_activate=np.array([0,1])
+            if option.Scalemode==1:
+
+                [H,k,b]=Scale_feature(H,Saturating_threshold,option.Scale)
+            elif option.Scalemode==2:   
+                
+                [H,k,b]=Scale_feature_separately(H,Saturating_threshold,option.Scale);
+
+        H = radbas(H)
     #np.set_printoptions(threshold=sys.maxsize)            
     #print(trainY_temp.size)
     return 0
