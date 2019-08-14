@@ -32,6 +32,9 @@
     <Compile Include="function.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="H.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="option.py">
       <SubType>Code</SubType>
     </Compile>

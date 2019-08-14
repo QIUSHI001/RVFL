@@ -5,6 +5,8 @@ import sys
 hardlim = (lambda x: np.array(x > 0.0, dtype=double))
 # triangular activation function
 tribas = (lambda x: np.clip(1.0 - np.fabs(x), 0.0, 1.0))
+# radbas activation function
+radbas = (lambda x: np.exp(-x**2))
 #this is the  function to train and evaluate rvfl for classification
 #problem.
 #option.n :      number of hidden neurons
@@ -124,7 +126,7 @@ def RVFL_train_val(trainX,trainY,testX,testY,option):
                 
                 [H,k,b]=Scale_feature_separately(H,Saturating_threshold,option.Scale);
 
-        H = rb.radbas(H)
+        H = radbas(H)
 
     elif option.ActivationFunction.lower()== 'sign':
 
@@ -167,18 +169,124 @@ def RVFL_train_val(trainX,trainY,testX,testY,option):
     
     else:
         print('Unsupport mode, only Regularized least square and Moore-Penrose pseudoinverse are allowed. ')
+    
 
     trainY_temp=np.matmul(H,beta)
     Y_temp=np.zeros((Nsample,1))
+
     # decode the target
+    for i in range(0,Nsample):
+        idx=np.argmax(trainY_temp[i,:])
+        Y_temp[i]=U_trainY[idx]
+
+    Bias_test=np.matlib.repmat(Bias,np.size(testY),1)
+    H_test=np.matmul(testX,Weight)+Bias_test
 
 
+    if option.ActivationFunction.lower()=='sig' or option.ActivationFunction.lower()=='sigmoid':
+        ####### Sigmoid 
+        if option.Scale:
+            if option.Scalemode==1:
+                H_test=H_test*k+b
+            elif option.Scalemode==2:
+                nSamtest=H_test.shape[0]
+                kt=np.matlib.repmat(k,nSamtest,1)
+                bt=np.matlib.repmat(b,nSamtest,1)
+                H_test=H_test*kt+bt
+
+        H_test=1 / (1 + np.exp(-H_test))
+
+    elif option.ActivationFunction.lower()=='sin' or option.ActivationFunction.lower()=='sine':
+
+        if option.Scale:
+            if option.Scalemode==1:
+                H_test=H_test*k+b
+            elif option.Scalemode==2:
+                nSamtest=H_test.shape[0]
+                kt=np.matlib.repmat(k,nSamtest,1)
+                bt=np.matlib.repmat(b,nSamtest,1)
+                H_test=H_test*kt+bt
+
+        H_test=np.sin(H_test)
+
+    elif option.ActivationFunction.lower()=='hardlim':
+
+        H_test=hardlim(H_test)
+
+    elif option.ActivationFunction.lower()=='tribas':
+
+        if option.Scale:
+            if option.Scalemode==1:
+                H_test=H_test*k+b
+            elif option.Scalemode==2:
+                nSamtest=H_test.shape[0]
+                kt=np.matlib.repmat(k,nSamtest,1)
+                bt=np.matlib.repmat(b,nSamtest,1)
+                H_test=H_test*kt+bt
+
+        H_test=tribas(H_test)
+
+    elif option.ActivationFunction.lower()== 'radbas':
+
+        if option.Scale:
+            if option.Scalemode==1:
+                H_test=H_test*k+b
+            elif option.Scalemode==2:
+                nSamtest=H_test.shape[0]
+                kt=np.matlib.repmat(k,nSamtest,1)
+                bt=np.matlib.repmat(b,nSamtest,1)
+                H_test=H_test*kt+bt
+
+        H_test = radbas(H_test)
+
+    elif option.ActivationFunction.lower()== 'sign':
+
+        H_test=np.sign(H_test)
+    
+    if option.bias:
+        H_test=np.concatenate([H_test,np.ones((np.size(testY),1))],axis=1)
+
+    if option.link:
+        if option.Scalemode==1:
+            testX_temp=testX*k+b
+            H_test=np.concatenate([H_test,testX_temp],axis=1)
+
+        elif option.Scalemode==2:
+            nSamtest=H_test.shape[0]
+            kt=np.matlib.repmat(ktr,nSamtest,1)
+            bt=np.matlib.repmat(btr,nSamtest,1)
+            testX_temp=testX*kt+bt
+            H_test=np.concatenate([H_test,testX_temp],axis=1)
+
+        else:
+            H_test=np.concatenate([H_test,testX],axis=1)
 
 
+    H_test[np.isnan(H_test)]=0
+    testY_temp=np.matmul(H_test,beta)
+    Yt_temp=np.zeros((np.size(testY),1))
+
+    for i in range(0,np.size(testY)):
+        idx=np.argmax(testY_temp[i,:])
+        Yt_temp[i]=U_trainY[idx]
+
+
+    train_num=0
+    for i in range (0,Y_temp.shape[0]):
+        if Y_temp[i]==trainY[i]:
+            train_num+=1
+
+    train_accuracy=train_num/Nsample
+
+    test_num=0
+    for i in range (0,Yt_temp.shape[0]):
+        if Yt_temp[i]==testY[i]:
+            test_num+=1
+    test_accuracy=test_num/np.size(testY)
+
+    return train_accuracy,test_accuracy
     #np.set_printoptions(threshold=sys.maxsize)            
     #print(trainY_temp.size)
-    return 0
-
   
 
 def Scale_feature(Input,Saturating_threshold,ratio):
