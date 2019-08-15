@@ -9,7 +9,6 @@ from option import option as op
 data = data[:,1:]
 dataX = data[:,0:-1]
 dataY = data[:,[-1]]
-#print(dataX)
 
 
 # do normalization for each feature
@@ -23,16 +22,15 @@ train_accuracy = np.zeros((1,4))
 
 #Look at the documentation of RVFL_train_val function file 
 option=op(100,False,True,'radbas',0,1,'Uniform',1,1)
-option.N = 20
+option.N = 405
 option.C = 1
 option.bias = 1
 option.link = 1
-option.mode = 1
-option.ActivationFunction='hardlim'
-option.Scalemode=0
-#a=np.array([1,2,3,4,5,6])
-#test=dataX[a,:]
-#print(test)
+option.mode = 2
+option.ActivationFunction='sig'
+option.Scalemode=2
+
+
 for i in range(0,4):
 
     trainX = dataX[index[2*i-2],:]
@@ -44,7 +42,6 @@ for i in range(0,4):
     train_accuracy[0,i],ACC_CV[0,i] = RVFL_train_val(trainX,trainY,testX,testY,option)
  
     
-# print(train_accuracy)
 Train_Accuarcy = np.mean(train_accuracy,axis=1)
 Test_Accuracy = np.mean(ACC_CV,axis=1)
 
