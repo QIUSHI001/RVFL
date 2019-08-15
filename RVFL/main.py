@@ -23,13 +23,13 @@ train_accuracy = np.zeros((1,4))
 
 #Look at the documentation of RVFL_train_val function file 
 option=op(100,False,True,'radbas',0,1,'Uniform',1,1)
-option.N = 405
+option.N = 20
 option.C = 1
 option.bias = 1
 option.link = 1
 option.mode = 1
-option.ActivationFunction='sig'
-option.Scalemode=2
+option.ActivationFunction='hardlim'
+option.Scalemode=0
 #a=np.array([1,2,3,4,5,6])
 #test=dataX[a,:]
 #print(test)

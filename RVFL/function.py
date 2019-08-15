@@ -2,7 +2,7 @@ import numpy as np
 import numpy.matlib
 import sys
 # hard limit activation function
-hardlim = (lambda x: np.array(x > 0.0, dtype=double))
+hardlim = (lambda x: np.array(x > 0.0, dtype=np.float64))
 # triangular activation function
 tribas = (lambda x: np.clip(1.0 - np.fabs(x), 0.0, 1.0))
 # radbas activation function
@@ -95,7 +95,6 @@ def RVFL_train_val(trainX,trainY,testX,testY,option):
                 [H,k,b]=Scale_feature_separately(H,Saturating_threshold,option.Scale)
                 
         H=np.sin(H)
-        #print(H.min(),H.max())
 
     elif option.ActivationFunction.lower()=='hardlim':
 
@@ -152,7 +151,6 @@ def RVFL_train_val(trainX,trainY,testX,testY,option):
     
     if option.mode==2:
         beta=np.matmul(np.linalg.pinv(H),trainY_temp)
-        #print(beta.shape)
 
     elif option.mode==1:
 
@@ -285,8 +283,7 @@ def RVFL_train_val(trainX,trainY,testX,testY,option):
     test_accuracy=test_num/np.size(testY)
 
     return train_accuracy,test_accuracy
-    #np.set_printoptions(threshold=sys.maxsize)            
-    #print(trainY_temp.size)
+
   
 
 def Scale_feature(Input,Saturating_threshold,ratio):
