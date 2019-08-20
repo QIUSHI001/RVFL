@@ -28,7 +28,7 @@ radbas = (lambda x: np.exp(-x**2))
 #this software package has been developed by le zhang(c) 2015
 #based on this paper: a comprehensive evaluation of random vector functional link neural network variants
 # for technical support and/or help, please contact lzhang027@e.ntu.edu.sg
-#this package has been downloaed from https://sites.google.com/site/zhangleuestc/
+#this package has been download from https://sites.google.com/site/zhangleuestc/
 def RVFL_train_val(trainX,trainY,testX,testY,option):
     U_trainY=np.unique(trainY)
     nclass=U_trainY.size

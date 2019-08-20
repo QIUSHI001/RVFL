@@ -10,6 +10,8 @@ data = data[:,1:]
 dataX = data[:,0:-1]
 dataY = data[:,[-1]]
 
+#fix the random seed for these type of experiments where it involves randomization
+
 
 # do normalization for each feature
 dataX_mean=np.mean(dataX,axis=0)
@@ -22,13 +24,13 @@ train_accuracy = np.zeros((1,4))
 
 #Look at the documentation of RVFL_train_val function file 
 option=op(100,False,True,'radbas',0,1,'Uniform',1,1)
-option.N = 405
+option.N = 20
 option.C = 1
 option.bias = 1
 option.link = 1
 option.mode = 2
 option.ActivationFunction='sig'
-option.Scalemode=2
+option.Scalemode=1
 
 
 for i in range(0,4):
